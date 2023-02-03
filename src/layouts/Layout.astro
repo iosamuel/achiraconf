@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/assets/images/achiralogo-no-bg.png" />
+    <meta
+      name="description"
+      content="Conferencias IT en el Huila para promover el crecimiento de la comunidad tecnológica de la región."
+    />
+    <meta name="keywords" content="achira conf neiva huila developers" />
+    <meta name="author" content="Samuel Burbano" />
+    <meta name="generator" content={Astro.generator} />
+    <title>AchiraConf | Conferencias IT en el Huila</title>
+  </head>
+  <body class="flex text-white">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: "OPTIFirminDidot";
+    src: url("/assets/fonts/OPTIFirminDidot.ttf.woff") format("woff"),
+      url("/assets/fonts/OPTIFirminDidot.ttf.svg#OPTIFirminDidot") format("svg"),
+      url("/assets/fonts/OPTIFirminDidot.ttf.eot"),
+      url("/assets/fonts/OPTIFirminDidot.ttf.eot?#iefix")
+        format("embedded-opentype");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ND_LOGOS_REGULAR;
+    src: url("/assets/fonts/ND_LOGOS_REGULAR.ttf");
+    font-display: swap;
+  }
+
+  footer {
+    display: flex;
+    position: fixed;
+    bottom: var(--footer-bottom);
+    width: 100%;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+    transition: bottom 0.5s cubic-bezier(0.39, 0.58, 0.57, 1);
+  }
+</style>

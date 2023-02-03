@@ -1,0 +1,419 @@
+<canvas id="sky-background" class="fixed top-0 left-0 -z-20"></canvas>
+
+<script>
+  import { gsap, Circ } from "gsap";
+
+  const canvas = document.getElementById("sky-background") as HTMLCanvasElement;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  canvas.style.background = "#000";
+  var c = canvas.getContext("2d")!;
+
+  var bg = c.createRadialGradient(
+    canvas.width / 2,
+    canvas.height * 3,
+    canvas.height,
+    canvas.width / 2,
+    canvas.height,
+    canvas.height * 4
+  );
+  bg.addColorStop(0, "#32465E");
+  bg.addColorStop(0.4, "#000814");
+  bg.addColorStop(0.8, "#000814");
+  bg.addColorStop(1, "#000");
+
+  function animate() {
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = bg;
+    c.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  animate();
+
+  class Stars {
+    ctx: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+
+    nStars: number;
+    colors: string[];
+
+    stars: Star[];
+
+    constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
+      this.ctx = ctx;
+      this.width = width;
+      this.height = height;
+
+      this.nStars = 150;
+      this.colors = ["#176ab6", "#fb9b39"];
+      for (let i = 0; i < 98; i++) {
+        this.colors.push("#fff");
+      }
+      this.stars = [];
+    }
+
+    init() {
+      for (let i = 0; i < this.nStars; i++) {
+        this.stars.push(
+          new Star(this.ctx, this.width, this.height, this.colors)
+        );
+      }
+    }
+
+    onResize(width: number, height: number) {
+      this.width = width;
+      this.height = height;
+      this.stars = [];
+      this.init();
+    }
+
+    addListeners() {
+      const pages = document.querySelector(".pages")!;
+      let scrollTimer = -1;
+
+      const scroll = () => {
+        this.stars.forEach((star) => {
+          star.dy = star.originalDy * 200 + pages.scrollTop / 1000;
+        });
+
+        if (scrollTimer != -1) clearTimeout(scrollTimer);
+
+        scrollTimer = window.setTimeout(scrollFinished, 300);
+      };
+
+      const scrollFinished = () => {
+        this.stars.forEach((star) => {
+          star.dy = star.originalDy;
+        });
+      };
+
+      pages.addEventListener("scroll", scroll);
+    }
+
+    animate() {
+      requestAnimationFrame(this.animate.bind(this));
+      this.stars.forEach((s) => {
+        s.update();
+        if (s.y - s.radius < 0) {
+          this.replaceStar(s);
+        }
+      });
+    }
+
+    replaceStar(star: Star) {
+      let i = this.stars.indexOf(star);
+      this.stars.splice(i, 1);
+      this.stars.push(
+        new Star(
+          this.ctx,
+          this.width,
+          this.height + 5,
+          this.colors,
+          star.dy,
+          star.originalDy,
+          true
+        )
+      );
+    }
+  }
+
+  class Star {
+    ctx: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+    colors: string[];
+    dy: number;
+    originalDy: number;
+
+    x: number;
+    y: number;
+    radius: number;
+    color: string;
+
+    constructor(
+      ctx: CanvasRenderingContext2D,
+      width: number,
+      height: number,
+      colors: string[],
+      dy?: number,
+      originalDy?: number,
+      plainHeight = false
+    ) {
+      this.ctx = ctx;
+      this.width = width;
+      this.height = height;
+      this.x = randomInt(0, width);
+      this.y = plainHeight ? height : randomInt(0, height);
+      this.radius = Math.random() * 1.1;
+      this.colors = colors;
+      this.color = colors[randomInt(0, colors.length)];
+      this.dy = dy || -Math.random() * 0.3;
+      this.originalDy = originalDy || this.dy;
+    }
+
+    draw() {
+      this.ctx.beginPath();
+      this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      this.ctx.shadowBlur = randomInt(3, 15);
+      this.ctx.shadowColor = this.color;
+      this.ctx.strokeStyle = this.color;
+      this.ctx.fillStyle = "rgba( 255, 255, 255, .5)";
+      this.ctx.fill();
+      this.ctx.stroke();
+      this.ctx.closePath();
+    }
+
+    update() {
+      this.y += this.dy;
+      this.draw();
+    }
+  }
+
+  type Point = {
+    x: number;
+    originX: number;
+    y: number;
+    originY: number;
+    active?: number;
+    closest?: Point[];
+    circle?: Circle;
+  };
+  type Target = { x: number; y: number };
+  class Points {
+    ctx: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+    posy: number;
+
+    target: Target;
+    points: Point[];
+    animateHeader: boolean;
+    pointsAmount: number;
+    tweens: Set<gsap.core.Tween>;
+
+    constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
+      this.width = width;
+      this.height = height;
+      this.target = { x: this.width / 2, y: this.height / 2 };
+      this.ctx = ctx;
+      this.points = [];
+      this.animateHeader = true;
+      this.pointsAmount = width > 768 ? 20 : 6;
+      this.tweens = new Set();
+      this.posy = 0;
+    }
+
+    init() {
+      // create points
+      this.points = [];
+      for (var x = 0; x < this.width; x = x + this.width / this.pointsAmount) {
+        for (
+          var y = 0;
+          y < this.height;
+          y = y + this.height / this.pointsAmount
+        ) {
+          var px = x + (Math.random() * this.width) / this.pointsAmount;
+          var py = y + (Math.random() * this.height) / this.pointsAmount;
+          var p = { x: px, originX: px, y: py, originY: py };
+          this.points.push(p);
+        }
+      }
+
+      // for each point find the 5 closest points
+      for (var i = 0; i < this.points.length; i++) {
+        var closest = [];
+        var p1 = this.points[i];
+        for (var j = 0; j < this.points.length; j++) {
+          var p2 = this.points[j];
+          if (!(p1 == p2)) {
+            var placed = false;
+            for (var k = 0; k < 5; k++) {
+              if (!placed) {
+                if (closest[k] == undefined) {
+                  closest[k] = p2;
+                  placed = true;
+                }
+              }
+            }
+
+            for (var k = 0; k < 5; k++) {
+              if (!placed) {
+                if (getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                  closest[k] = p2;
+                  placed = true;
+                }
+              }
+            }
+          }
+        }
+        p1.closest = closest;
+      }
+
+      // assign a circle to each point
+      for (let i in this.points) {
+        const c = new Circle(
+          this.ctx,
+          this.points[i],
+          2 + Math.random() * 2,
+          "rgba(255,255,255,0.3)"
+        );
+        this.points[i].circle = c;
+      }
+
+      this.shiftPoints();
+    }
+
+    animate() {
+      if (this.animateHeader) {
+        for (var i in this.points) {
+          // detect points in range
+          if (Math.abs(getDistance(this.target, this.points[i])) < 4000) {
+            this.points[i].active = 0.3;
+            this.points[i].circle!.active = 0.6;
+          } else if (
+            Math.abs(getDistance(this.target, this.points[i])) < 20000
+          ) {
+            this.points[i].active = 0.1;
+            this.points[i].circle!.active = 0.3;
+          } else if (
+            Math.abs(getDistance(this.target, this.points[i])) < 40000
+          ) {
+            this.points[i].active = 0.02;
+            this.points[i].circle!.active = 0.1;
+          } else {
+            this.points[i].active = 0;
+            this.points[i].circle!.active = 0;
+          }
+
+          this.drawLines(this.points[i]);
+          this.points[i].circle!.draw();
+        }
+      }
+      requestAnimationFrame(this.animate.bind(this));
+    }
+
+    shiftPoints() {
+      for (var i in this.points) {
+        this.shiftPoint(this.points[i]);
+      }
+    }
+
+    shiftPoint(p: Point) {
+      const tween = gsap.to(p, {
+        duration: 1 + 1 * Math.random(),
+        x: p.originX - 50 + Math.random() * 100,
+        y: p.originY - 50 + Math.random() * 100,
+        ease: Circ.easeInOut,
+        onComplete: () => {
+          tween.kill();
+          this.tweens.delete(tween);
+          this.shiftPoint(p);
+        },
+      });
+      this.tweens.add(tween);
+    }
+
+    addListeners() {
+      if (!("ontouchstart" in window)) {
+        window.addEventListener("mousemove", this.onMouseMove.bind(this));
+      }
+    }
+
+    onResize(width: number, height: number) {
+      this.width = width;
+      this.height = height;
+      this.target = { x: this.width / 2, y: this.height / 2 };
+      this.pointsAmount = width > 768 ? 20 : 6;
+      this.tweens.forEach((tween) => tween.kill());
+      this.init();
+    }
+
+    onMouseMove(e: MouseEvent) {
+      var posx = (this.posy = 0);
+      if (e.pageX || e.pageY) {
+        posx = e.pageX;
+        this.posy = e.pageY;
+      } else if (e.clientX || e.clientY) {
+        posx =
+          e.clientX +
+          document.body.scrollLeft +
+          document.documentElement.scrollLeft;
+        this.posy =
+          e.clientY +
+          document.body.scrollTop +
+          document.documentElement.scrollTop;
+      }
+      this.target.x = posx;
+      this.target.y = this.posy;
+    }
+
+    drawLines(p: Point) {
+      if (!p.active) return;
+      for (let i in p.closest!) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(p.x, p.y);
+        this.ctx.lineTo(p.closest[i].x, p.closest[i].y);
+        this.ctx.strokeStyle = "rgba(156,217,249," + p.active + ")";
+        this.ctx.stroke();
+      }
+    }
+  }
+
+  class Circle {
+    ctx: CanvasRenderingContext2D;
+    pos: Point;
+    radius: number;
+    color: string | null;
+    active: number | null;
+
+    constructor(
+      ctx: CanvasRenderingContext2D,
+      pos: Point,
+      rad: number,
+      color: string,
+      active: number | null = null
+    ) {
+      this.pos = pos || null;
+      this.radius = rad;
+      this.color = color || null;
+      this.ctx = ctx;
+      this.active = active;
+    }
+
+    draw() {
+      if (!this.active) return;
+      this.ctx.beginPath();
+      this.ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI, false);
+      this.ctx.fillStyle = "rgba(156,217,249," + this.active + ")";
+      this.ctx.fill();
+    }
+  }
+
+  function getDistance(p1: Target, p2: Target) {
+    return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+  }
+
+  function randomInt(max: number, min: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  const stars = new Stars(c, canvas.width, canvas.height);
+  stars.init();
+  stars.animate();
+  stars.addListeners();
+
+  const points = new Points(c, canvas.width, canvas.height);
+  points.init();
+  points.animate();
+  points.addListeners();
+
+  window.addEventListener("resize", () => {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+    stars.onResize(canvas.width, canvas.height);
+    points.onResize(canvas.width, canvas.height);
+  });
+</script>

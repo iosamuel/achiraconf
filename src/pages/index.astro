@@ -1,0 +1,127 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Home from "./_home.astro";
+import About from "./_about.astro";
+import Header from "../components/Header.astro";
+import SkyBackground from "../components/SkyBackground.astro";
+---
+
+<Layout>
+  <div
+    class="focus absolute -z-10 w-full h-screen pointer-events-none mix-blend-darken"
+  >
+  </div>
+
+  <SkyBackground />
+
+  <div class="pages">
+    <Header />
+
+    <Home class="page" />
+
+    <About class="page" />
+
+    <footer class="">
+      <p>&copy; {new Date().getFullYear()} AchiraConf</p>
+    </footer>
+  </div>
+</Layout>
+
+<script>
+  let pages = document.querySelector(".pages") as HTMLElement;
+  let footer = document.querySelector("footer") as HTMLElement;
+
+  const footerBottom = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue("--footer-bottom");
+
+  function setDesertBottom() {
+    const scroll = pages.scrollTop;
+
+    const desertBottom = Number(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--desert-bottom")
+        .replace("px", "")
+    );
+
+    pages.style.setProperty(
+      "--desert-bottom",
+      `${scroll * -2 + desertBottom}px`
+    );
+
+    if (pages.scrollTop + pages.clientHeight >= pages.scrollHeight) {
+      footer.style.bottom = "0";
+    } else {
+      footer.style.bottom = footerBottom;
+    }
+  }
+  pages.addEventListener("scroll", setDesertBottom);
+  window.addEventListener("resize", setDesertBottom);
+</script>
+
+<style>
+  :root {
+    --desert-bottom: -20px;
+    --footer-bottom: -100%;
+  }
+
+  @media screen and (min-width: 768px) {
+    :root {
+      --desert-bottom: -100px;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    :root {
+      --desert-bottom: -150px;
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    :root {
+      --desert-bottom: -250px;
+    }
+  }
+
+  .focus {
+    background: radial-gradient(
+      circle at 50% 100%,
+      transparent 10%,
+      rgba(0, 0, 0, 0.5) 50%
+    );
+  }
+
+  .pages {
+    width: 100%;
+    height: 100vh;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .pages::after {
+    content: "";
+    background: url(./desert.png) repeat-x;
+    background-position-y: bottom;
+    background-size: 70%;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    bottom: var(--desert-bottom);
+    z-index: -10;
+    filter: brightness(0.6);
+    transition: bottom 1s cubic-bezier(0.39, 0.58, 0.57, 1);
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    scroll-snap-align: start;
+  }
+</style>
