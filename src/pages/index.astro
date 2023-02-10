@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Home from "./_home.astro";
-import About from "./_about.astro";
+import Home from "../components/sections/home.astro";
+import About from "../components/sections/about.astro";
 import Header from "../components/Header.astro";
 import SkyBackground from "../components/SkyBackground.astro";
 ---
@@ -14,17 +14,21 @@ import SkyBackground from "../components/SkyBackground.astro";
 
   <SkyBackground />
 
-  <div class="pages">
+  <main
+    class="pages w-full h-screen p-8 snap-y snap-mandatory overflow-y-scroll overflow-x-hidden relative after:left-0 after:bg-repeat-x after:bg-[size:70%] after:w-full after:h-full after:fixed after:-z-10 after:brightness-50 after:transition-[bottom] after:duration-1000"
+  >
     <Header />
 
-    <Home class="page" />
+    <Home />
 
-    <About class="page" />
+    <About />
 
-    <footer class="">
+    <footer
+      class="flex fixed bottom-[var(--footer-bottom)] w-full p-4 items-center justify-center transition-[bottom] duration-500"
+    >
       <p>&copy; {new Date().getFullYear()} AchiraConf</p>
     </footer>
-  </div>
+  </main>
 </Layout>
 
 <script>
@@ -91,37 +95,15 @@ import SkyBackground from "../components/SkyBackground.astro";
     );
   }
 
-  .pages {
-    width: 100%;
-    height: 100vh;
-    scroll-snap-type: y mandatory;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    position: relative;
-  }
-
   .pages::after {
-    content: "";
-    background: url(./desert.png) repeat-x;
+    /* content: ""; */
+    background-image: url(/assets/images/desert.png);
     background-position-y: bottom;
-    background-size: 70%;
-    width: 100%;
-    height: 100%;
-    position: fixed;
     bottom: var(--desert-bottom);
-    z-index: -10;
-    filter: brightness(0.6);
-    transition: bottom 1s cubic-bezier(0.39, 0.58, 0.57, 1);
+    transition-timing-function: cubic-bezier(0.39, 0.58, 0.57, 1);
   }
 
-  .page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    scroll-snap-align: start;
+  footer {
+    transition-timing-function: cubic-bezier(0.39, 0.58, 0.57, 1);
   }
 </style>

@@ -1,0 +1,25 @@
+---
+import { Icon } from "astro-icon";
+
+const { href, class: className, ...props } = Astro.props;
+
+const Tag = href ? "a" : "button";
+---
+
+<Tag
+  href={href}
+  class:list={[
+    "astro-button flex p-2 px-4 transition-all duration-300 border-4 border-achira shadow-[8px_8px_0px_0px_rgb(255,255,255,0.25)] text-xl bg-achira rounded-xl hover:border-4 hover:bg-white hover:text-achira hover:border-achira hover:shadow-none",
+    className,
+  ]}
+  {...props}
+>
+  <slot />
+  <Icon name="fa:chevron-right" class="ml-2 w-4" />
+</Tag>
+
+<style>
+  .astro-button {
+    font-family: ND_LOGOS_REGULAR;
+  }
+</style>
