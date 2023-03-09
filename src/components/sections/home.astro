@@ -10,18 +10,32 @@ import Title from "../common/Title.astro";
 >
   <Logo />
   <Title type="h1">AchiraConf</Title>
-  <p class="text-justify">
-    Acompáñanos a la primera edición de esta conferencia para que lleves el
-    tuste lleno de tecnología con una caguinga de conocimiento.
-  </p>
-  <Title
-    type="h2"
-    bg={false}
-    class="text-left self-start after:block after:w-full after:h-2 after:bg-white after:mt-1"
-  >
-    Mayo 5<br />Neiva
-  </Title>
-  <div class="absolute bottom-8 flex flex-col gap-8 self-end mt-8">
+  <div class="flex flex-col gap-8 md:flex-row md:p-8 md:mt-8 lg:mt-12 md:gap-8">
+    <p class="text-justify basis-1/2 md:px-8 lg:px-16 xl:px-30">
+      Acompáñanos a la primera edición de esta conferencia para que lleves el
+      tuste lleno de tecnología con una caguinga de conocimiento.
+    </p>
+    <div class="self-start basis-1/2 flex flex-col justify-center relative">
+      <div class="text-left">
+        <Title
+          type="h2"
+          bg={false}
+          class="inline-block after:block after:w-full after:h-2 after:bg-white after:mt-1"
+        >
+          Mayo 5<br />Neiva
+        </Title>
+      </div>
+      <div
+        class="hidden position absolute -bottom-52 left-0 md:flex flex-col gap-8 self-end w-max"
+      >
+        <Button href="#" target="_blank" class="self-end">
+          Envia tu charla
+        </Button>
+        <Button href="#" target="_blank" class="self-start">Tickets</Button>
+      </div>
+    </div>
+  </div>
+  <div class="md:hidden absolute bottom-8 flex flex-col gap-8 self-end">
     <Button href="#" target="_blank" class="self-end">Envia tu charla</Button>
     <Button href="#" target="_blank" class="self-end">Tickets</Button>
   </div>
