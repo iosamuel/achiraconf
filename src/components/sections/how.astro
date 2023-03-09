@@ -1,0 +1,26 @@
+---
+import Button from "../common/Button.astro";
+import Card from "../common/card.astro";
+import Title from "../common/Title.astro";
+---
+
+<section
+  class="container p-4 mb-20 relative mx-auto flex flex-col items-center gap-16 w-full min-h-full text-center snap-start"
+  {...Astro.props}
+>
+  <Title type="h2" class="self-start">Como?</Title>
+  <Card title="Presencial" link="#" linkText="Ver Ubicación">
+    <ul class="list-disc text-left">
+      <li>Conecta con exponentes y Devs estelares</li>
+      <li>Obtén Swag especial de AchiraConf</li>
+      <li>Encuentra tu próxima empresa :)</li>
+    </ul>
+  </Card>
+  <Card title="Online" link="#" linkText="twitch.tv/achiraconf">
+    <ul class="list-disc text-left">
+      <li>Desde la comodidad de tu sillón</li>
+      <li>Chatea con otros Devs</li>
+    </ul>
+  </Card>
+  <Button href="#" target="_blank" class="self-center">Tickets</Button>
+</section>

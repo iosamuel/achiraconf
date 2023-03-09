@@ -1,0 +1,25 @@
+---
+import Button from "../common/Button.astro";
+import Logo from "../common/Logo.astro";
+import Title from "../common/Title.astro";
+import Facebook from "../Icons/Facebook.astro";
+import Instagram from "../Icons/Instagram.astro";
+import Twitter from "../Icons/Twitter.astro";
+---
+
+<section
+  class="container p-4 mb-10 relative mx-auto flex flex-col items-center justify-center gap-8 w-full h-full text-center snap-start"
+  {...Astro.props}
+>
+  <Logo />
+  <Title type="h1">AchiraConf</Title>
+  <div class="flex flex-col gap-4 md:flex-row md:p-8 md:mt-8 lg:mt-12 md:gap-8">
+    <div class="flex justify-around w-80">
+      <a href="#" target="_blank"><Twitter class="w-16 fill-white" /></a>
+      <a href="#" target="_blank"><Facebook class="w-16 fill-white" /></a>
+      <a href="#" target="_blank"><Instagram class="w-16 fill-white" /></a>
+    </div>
+    <p>Síguenos en redes sociales</p>
+    <Button href="#" target="_blank" class="self-center mt-4">Tickets</Button>
+  </div>
+</section>

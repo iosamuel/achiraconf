@@ -1,9 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Home from "../components/sections/home.astro";
-import About from "../components/sections/about.astro";
+import How from "../components/sections/how.astro";
 import Header from "../components/Header.astro";
 import SkyBackground from "../components/SkyBackground.astro";
+import Socials from "../components/sections/socials.astro";
 ---
 
 <Layout>
@@ -15,13 +16,15 @@ import SkyBackground from "../components/SkyBackground.astro";
   <SkyBackground />
 
   <main
-    class="pages w-full h-full snap-y snap-mandatory overflow-y-scroll overflow-x-hidden relative after:left-0 after:bg-repeat-x after:bg-[size:70%] after:w-full after:h-full after:fixed after:-z-10 after:brightness-50 after:transition-[bottom] after:duration-1000"
+    class="pages w-full h-full scroll-smooth snap-y snap-proximity overflow-y-scroll overflow-x-hidden relative after:left-0 after:bg-repeat-x after:bg-[size:70%] after:w-full after:h-full after:fixed after:-z-10 after:brightness-50 after:transition-[bottom] after:duration-1000"
   >
     <Header />
 
     <Home />
 
-    <About />
+    <How />
+
+    <Socials />
 
     <footer
       class="flex fixed bottom-[var(--footer-bottom)] w-full p-4 items-center justify-center transition-[bottom] duration-500"

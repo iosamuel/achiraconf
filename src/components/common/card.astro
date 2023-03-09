@@ -1,0 +1,19 @@
+---
+import Link from "./Link.astro";
+import Title from "./Title.astro";
+
+const { title, link, linkText } = Astro.props;
+---
+
+<div
+  class="w-full bg-sky-800 bg-opacity-60 shadow-[2px_2px_4px] shadow-slate-100 rounded-md relative"
+>
+  <Title type="h3" bg={false} class="absolute -top-4 w-full">
+    {title}
+  </Title>
+  <div class="p-8">
+    <slot />
+    <div class="h-0.5 bg-white my-4"></div>
+    <Link href={link}>{linkText}</Link>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+---
+const { href, class: className, ...props } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "astro-link transition-all duration-300 underline underline-offset-4 decoration-[#f9e976] hover:no-underline",
+    className,
+  ]}
+  {...props}
+>
+  <slot />
+</a>
+
+<style>
+  .astro-link {
+    font-family: ND_LOGOS_REGULAR;
+    background: -webkit-linear-gradient(#f9e976, #c7881e);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .astro-link:hover {
+    background: -webkit-linear-gradient(#c7881e, #f9e976);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
