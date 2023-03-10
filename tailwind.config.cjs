@@ -4,8 +4,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        achira: "#c7881e",
-        "achira-light": "#f9e976",
+        achira: {
+          DEFAULT: "#c7881e",
+          light: "#f9e976",
+          darklight: "#E7AC2A",
+        },
       },
     },
   },

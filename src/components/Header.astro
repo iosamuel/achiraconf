@@ -1,9 +1,62 @@
 ---
+import HeaderLink from "./common/HeaderLink.astro";
 import Bars from "./Icons/Bars.astro";
 ---
 
-<header class="flex fixed top-0 w-full p-4 justify-end">
-  <button class="lg:hidden">
-    <Bars class="fill-[#c7881e] w-6" />
+<header class="flex fixed top-0 w-full justify-end z-30">
+  <button id="bars" class="lg:hidden p-4 transition-all duration-100 ease-in">
+    <Bars class="fill-achira w-6" />
   </button>
+  <div
+    id="menu"
+    class="gap-4 flex max-lg:invisible max-lg:opacity-0 max-lg:-z-50 max-lg:transition-all max-lg:duration-100 max-lg:ease-in max-lg:fixed max-lg:top-0 max-lg:right-14 max-lg:flex-col max-lg:bg-gray-800 max-lg:bg-opacity-95 max-lg:p-4 max-lg:w-64"
+  >
+    <HeaderLink href="#home" class="active">Home</HeaderLink>
+    <HeaderLink href="#how">Cómo</HeaderLink>
+    <HeaderLink href="#sponsors">Sponsors</HeaderLink>
+    <HeaderLink href="#agenda">Agenda</HeaderLink>
+    <HeaderLink href="#speakers">Speakers</HeaderLink>
+    <HeaderLink href="#quienessomos">Quienes Somos</HeaderLink>
+  </div>
 </header>
+
+<script>
+  const bars = document.getElementById("bars");
+  const menu = document.getElementById("menu");
+
+  function toggleMenu() {
+    menu?.classList.toggle("max-lg:invisible");
+    menu?.classList.toggle("max-lg:opacity-0");
+    bars?.classList.toggle("rotate-90");
+  }
+
+  bars?.addEventListener("click", toggleMenu);
+  menu?.addEventListener("click", toggleMenu);
+
+  const links = document.querySelectorAll("header a");
+  const sections = document.querySelectorAll("section");
+
+  const options = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.5,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute("id");
+        links.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${id}`) {
+            link.classList.add("active");
+          }
+        });
+      }
+    });
+  }, options);
+
+  sections.forEach((section) => {
+    observer.observe(section);
+  });
+</script>

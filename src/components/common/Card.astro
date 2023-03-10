@@ -2,18 +2,31 @@
 import Link from "./Link.astro";
 import Title from "./Title.astro";
 
-const { title, link, linkText } = Astro.props;
+const { title, link, linkText, bgImage } = Astro.props;
 ---
 
 <div
-  class="w-full bg-sky-800 bg-opacity-60 shadow-[2px_2px_4px] shadow-slate-100 rounded-md relative"
+  class="astro-card w-full flex bg-sky-800 bg-opacity-60 shadow-[2px_2px_4px] shadow-slate-100 rounded-md relative"
 >
   <Title type="h3" bg={false} class="absolute -top-4 w-full">
     {title}
   </Title>
-  <div class="p-8">
+  <div
+    class="astro-card__bg hidden md:block flex-1 p-8 bg-no-repeat bg-cover"
+    style={{
+      "--bg-image": `linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${bgImage})`,
+    }}
+  >
+  </div>
+  <div class="p-8 flex-1">
     <slot />
     <div class="h-0.5 bg-white my-4"></div>
     <Link href={link}>{linkText}</Link>
   </div>
 </div>
+
+<style>
+  .astro-card__bg {
+    background-image: var(--bg-image);
+  }
+</style>

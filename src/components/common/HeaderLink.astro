@@ -1,0 +1,30 @@
+---
+const { href, class: className, ...props } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "astro-header-link uppercase font-bold text-white transition-all duration-300 p-4",
+    className,
+  ]}
+  {...props}
+>
+  <slot />
+</a>
+
+<style>
+  .astro-header-link.active {
+    background: -webkit-linear-gradient(#f9e976, #c7881e);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .astro-header-link.active::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: -webkit-linear-gradient(#f9e976, #c7881e);
+  }
+</style>
